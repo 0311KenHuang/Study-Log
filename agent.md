@@ -2,7 +2,7 @@
 
 ## 项目概述
 
-本项目是一个前后端分离的企业官网系统，采用 **Vue 3** 作为前端框架，**Django** 作为后端框架，通过 REST API 进行数据交互。
+本项目是一个全栈学习记录与追踪应用 **"用功日志"**，采用 **Django + DRF** 作为后端框架提供 RESTful API，**Vue 3** 作为门户展示前端，**原生 HTML + Tailwind CSS** 作为学习记录核心应用界面。支持本地开发与 Render.com 一键部署。
 
 ## 技术栈
 
@@ -10,21 +10,33 @@
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
-| Python | 3.10.11 | 运行环境 |
+| Python | 3.12 | 运行环境 |
 | Django | 5.2.16 | Web 后端框架 |
+| Django REST Framework | 3.17.1 | RESTful API 构建 |
+| django-cors-headers | 4.9.0 | 跨域请求支持 |
 | django-simpleui | 2026.1.13 | Django Admin 美化框架 |
-| SQLite3 | - | 开发阶段数据库 |
+| Gunicorn | 23.0.0 | 生产环境 WSGI 服务器 |
+| WhiteNoise | 6.9.0 | 生产环境静态文件服务 |
+| SQLite3 | - | 数据库 |
 
 ### 前端
 
 | 技术 | 版本 | 说明 |
 |------|------|------|
-| Vue | 3.5.40 | 前端框架 |
+| Vue | 3.5.40 | 门户展示页框架 |
 | TypeScript | 6.0.2 | 类型系统 |
 | Vite | 8.1.1 | 构建工具 |
 | Vue Router | 5.2.0 | 客户端路由 |
 | Pinia | 4.0.2 | 状态管理 |
 | Axios | 1.18.1 | HTTP 请求库 |
+| Tailwind CSS | CDN | study-tracker 样式框架 |
+
+### 部署
+
+| 平台 | 说明 |
+|------|------|
+| Render.com | 免费自动部署平台 |
+| GitHub | 代码托管与版本管理 |
 
 ## 项目结构
 
@@ -33,43 +45,55 @@
 ├── corporate_site/                # Django 项目配置
 │   ├── __init__.py
 │   ├── asgi.py                    # ASGI 入口
-│   ├── settings.py                # 项目设置
-│   ├── urls.py                    # 根 URL 路由
+│   ├── settings.py                # 项目设置(环境变量 / DRF / CORS / WhiteNoise)
+│   ├── urls.py                    # 根路由(admin + api + study-tracker 首页)
 │   └── wsgi.py                    # WSGI 入口
 ├── main/                          # Django 主应用
-│   ├── migrations/
+│   ├── migrations/                # 数据库迁移文件
 │   ├── __init__.py
 │   ├── admin.py                   # Admin 后台注册
 │   ├── apps.py                    # 应用配置
-│   ├── models.py                  # 数据模型
+│   ├── models.py                  # 7 张数据模型(记录/笔记/任务/分类/目标/备份/搜索历史)
+│   ├── serializers.py             # DRF 序列化器
 │   ├── tests.py                   # 测试
-│   └── views.py                   # 视图
-├── frontend/                      # Vue 前端项目
-│   ├── public/
+│   ├── urls.py                    # API 路由注册(DefaultRouter)
+│   └── views.py                   # DRF ViewSet + 统计聚合接口
+├── frontend/                      # 前端项目
+│   ├── public/                    # 公共静态资源
 │   │   ├── favicon.svg
 │   │   └── icons.svg
-│   ├── src/
+│   ├── src/                       # Vue 3 门户前端
 │   │   ├── assets/                # 静态资源
-│   │   │   ├── hero.png
-│   │   │   ├── typescript.svg
-│   │   │   └── vite.svg
 │   │   ├── router/
 │   │   │   └── index.ts           # 路由配置
 │   │   ├── views/                 # 页面组件
-│   │   │   ├── Home.vue           # 首页
+│   │   │   ├── Home.vue           # 首页(Hero 区域 + 特性卡片)
 │   │   │   ├── About.vue          # 关于我们
 │   │   │   ├── Products.vue       # 产品服务
 │   │   │   └── Contact.vue        # 联系我们
-│   │   ├── App.vue                # 根组件（导航栏 + 页脚）
+│   │   ├── App.vue                # 根组件(导航栏 + 页脚)
 │   │   ├── main.ts                # 前端入口
 │   │   └── style.css              # 全局样式
-│   ├── index.html                 # HTML 入口
-│   ├── package.json               # 依赖管理
+│   ├── study-tracker/             # 学习追踪应用(原生 JS + Tailwind)
+│   │   ├── index.html             # 主页面(8 个功能模块)
+│   │   ├── css/styles.css         # 全局样式
+│   │   └── js/
+│   │       ├── app.js             # 应用入口
+│   │       ├── router.js          # 前端路由
+│   │       ├── pages.js           # 页面渲染逻辑
+│   │       └── data.js            # 数据交互层(API 调用)
+│   ├── index.html                 # Vue HTML 入口
+│   ├── package.json               # npm 依赖
 │   ├── tsconfig.json              # TypeScript 配置
-│   └── vite.config.ts             # Vite 配置（含 API 代理）
-├── venv/                          # Python 虚拟环境
-├── db.sqlite3                     # SQLite 数据库
+│   └── vite.config.ts             # Vite 配置(含 /api 代理)
+├── assets/                        # 品牌素材(Logo)
 ├── manage.py                      # Django 管理脚本
+├── requirements.txt               # Python 依赖清单
+├── Procfile                       # 部署启动命令(Gunicorn)
+├── render.yaml                    # Render.com 部署配置
+├── .python-version                # Python 版本声明
+├── .gitignore                     # Git 忽略规则
+├── README.md                      # GitHub 仓库说明文档
 └── agent.md                       # 本文件
 ```
 
@@ -79,7 +103,7 @@
 
 ```powershell
 # 创建虚拟环境
-python -m virtualenv venv
+python -m venv venv
 
 # 激活虚拟环境（Windows PowerShell）
 .\venv\Scripts\Activate.ps1
@@ -88,45 +112,78 @@ python -m virtualenv venv
 deactivate
 ```
 
-### 安装 Python 依赖
+### 安装依赖
 
 ```powershell
-# 激活虚拟环境后
-pip install django django-simpleui
-```
+# Python 依赖（激活虚拟环境后）
+pip install -r requirements.txt
 
-### 安装前端依赖
-
-```powershell
+# 前端依赖（仅 Vue 门户开发时需要）
 cd frontend
 npm install
 ```
 
 ## 启动项目
 
-### 后端（Django）
+### 本地开发（推荐方式）
+
+study-tracker 已集成到 Django 中，只需启动一个服务即可同时访问前端页面和 API：
 
 ```powershell
 # 激活虚拟环境
 .\venv\Scripts\Activate.ps1
 
+# 执行数据库迁移
+python manage.py migrate
+
 # 启动开发服务器（默认 8000 端口）
 python manage.py runserver
 ```
 
-### 前端（Vue）
+启动后访问以下地址：
+
+| 地址 | 说明 |
+|------|------|
+| http://127.0.0.1:8000/ | 用功日志首页（study-tracker 前端） |
+| http://127.0.0.1:8000/api/ | REST API 接口列表 |
+| http://127.0.0.1:8000/admin/ | Django Admin 后台（SimpleUI 美化） |
+
+### Vue 门户前端（独立开发时）
+
+如需单独开发 Vue 门户页面：
 
 ```powershell
 cd frontend
 npm run dev
 ```
 
-### 访问地址
+Vue 门户运行在 `http://localhost:5173`，已配置 `/api` 代理到 Django 8000 端口。
 
-| 服务 | 地址 | 说明 |
+## 数据模型
+
+| 模型 | 表名 | 说明 |
 |------|------|------|
-| 前端 | http://localhost:5173/ | Vue 开发服务器 |
-| Django Admin | http://127.0.0.1:8000/admin/ | SimpleUI 美化后台 |
+| StudyRecord | study_records | 每日学习记录（日期、主题、时长、内容、分类） |
+| StudyNote | study_notes | 学习笔记（标题、内容、标签） |
+| StudyTask | study_tasks | 学习任务（标题、描述、优先级、截止日期、完成状态） |
+| StudyCategory | study_categories | 学习分类（名称、颜色、默认标记） |
+| StudyGoal | study_goals | 学习目标（周期、目标时长） |
+| StudyBackup | study_backups | 数据备份（名称、数据、文件大小） |
+| SearchHistory | study_search_history | 搜索历史（关键词、类型、结果数量） |
+
+## API 接口
+
+所有接口前缀为 `/api/`，基于 DRF ViewSet 自动生成：
+
+| 端点 | 方法 | 功能 | 自定义 Action |
+|------|------|------|---------------|
+| `/api/records/` | GET/POST/PATCH/DELETE | 学习记录 CRUD | `stats/`(统计)、`today/`(今日)、`daily_stats/`(趋势) |
+| `/api/notes/` | GET/POST/PATCH/DELETE | 学习笔记 CRUD | `search/`(全文搜索)、`all_tags/`(标签列表) |
+| `/api/tasks/` | GET/POST/PATCH/DELETE | 学习任务 CRUD | `toggle/`(切换完成)、`stats/`(统计) |
+| `/api/categories/` | GET/POST/DELETE | 学习分类 CRUD | |
+| `/api/goals/` | GET/POST/PATCH | 学习目标 CRUD | |
+| `/api/backups/` | GET/POST/DELETE | 数据备份 CRUD | |
+| `/api/search-history/` | GET/POST/DELETE | 搜索历史 CRUD | |
 
 ## 超级管理员
 
@@ -137,9 +194,72 @@ npm run dev
 | 邮箱 | 3296651736@qq.com |
 | 昵称 | wangdake |
 
+## Django 关键配置
+
+- **语言**: `zh-hans`（简体中文）
+- **时区**: `Asia/Shanghai`
+- **DEBUG**: 通过环境变量配置，默认 `True`（开发模式）
+- **SECRET_KEY**: 通过环境变量配置，生产环境必须设置
+- **ALLOWED_HOSTS**: 通过环境变量配置，默认 `localhost,127.0.0.1`
+- **数据库**: SQLite3（`db.sqlite3`）
+- **Admin 美化**: SimpleUI（`INSTALLED_APPS` 第一项）
+- **主应用**: `main`（已注册到 `INSTALLED_APPS`）
+- **REST Framework**: 已配置 `AllowAny` 权限，无分页
+- **CORS**: 全局允许跨域
+- **静态文件**: WhiteNoise 中间件，生产环境自动压缩
+- **静态文件目录**: `STATICFILES_DIRS` 注册了 `frontend/study-tracker`
+
+## 前端路由
+
+### Vue 门户
+
+| 路径 | 组件 | 说明 |
+|------|------|------|
+| `/` | Home.vue | 首页（Hero 区域 + 特性卡片） |
+| `/about` | About.vue | 关于我们 |
+| `/products` | Products.vue | 产品服务 |
+| `/contact` | Contact.vue | 联系我们 |
+
+### study-tracker（hash 路由）
+
+| 路由 | 功能 |
+|------|------|
+| `#home` | 首页 |
+| `#today` | 今日学习 |
+| `#calendar` | 日历档案 |
+| `#stats` | 数据统计 |
+| `#notes` | 笔记资料库 |
+| `#search` | 检索查询 |
+| `#tasks` | 计划任务 |
+| `#backup` | 数据备份 |
+| `#settings` | 设置 |
+
+## study-tracker 模块
+
+位于 `frontend/study-tracker/`，技术栈为 HTML + Tailwind CSS + 原生 JavaScript。
+
+study-tracker 已集成到 Django 中，通过根路径 `/` 直接访问。其 CSS/JS/图片资源通过 Django 静态文件系统 `/static/` 提供服务，API 调用使用相对路径 `/api`，自动适配当前域名。
+
+### 功能说明
+
+| 导航 | 功能描述 |
+|------|----------|
+| **首页 / 今日学习** | 当日学习记录快速录入、今日总时长、待完成学习任务、今日随笔入口 |
+| **日历档案** | 日历热力图视图，按日期查看全部历史学习日志，按月切换复盘 |
+| **数据统计** | 可视化图表：科目时长占比、月度趋势、连续打卡、分类分布 |
+| **笔记资料库** | 知识点摘抄、错题笔记、自定义学习合集归档，支持全文搜索 |
+| **检索查询** | 全局多条件筛选：科目、标签、关键词、时间段 |
+| **计划任务** | 周/月学习规划、待办清单、阶段性目标打卡 |
+| **数据备份** | 记录导入导出、批量备份、历史备份文件管理 |
+| **设置** | 自定义科目标签、学习目标设置、配色自定义 |
+
 ## 前后端通信
 
-前端 Vite 配置了 API 代理，开发环境下前端请求 `/api/*` 会自动转发到 Django 后端 `http://127.0.0.1:8000`：
+### 开发环境
+
+study-tracker 的 API 地址为相对路径 `/api`，由 Django 统一服务，无需跨域配置。
+
+Vue 门户通过 Vite 代理转发 `/api` 请求到 Django 后端：
 
 ```typescript
 // vite.config.ts
@@ -151,66 +271,49 @@ proxy: {
 }
 ```
 
-前端使用 Axios 发起请求示例：
+### 生产环境
 
-```typescript
-import axios from 'axios'
+前后端在同一个域名下，由 Django + WhiteNoise + Gunicorn 统一服务，无跨域问题。
 
-// 获取数据
-const response = await axios.get('/api/xxx/')
+## 生产部署
 
-// 提交数据
-const response = await axios.post('/api/xxx/', { key: 'value' })
+### 部署架构
+
+```
+用户浏览器
+    ↓ HTTPS
+Render.com CDN
+    ↓
+Gunicorn (WSGI 服务器)
+    ↓
+Django 应用
+    ├── /api/*        → DRF ViewSet (JSON API)
+    ├── /static/*     → WhiteNoise (静态文件)
+    ├── /admin/       → Django Admin (后台管理)
+    └── /            → study-tracker (前端页面)
+    ↓
+SQLite 数据库
 ```
 
-## Django 关键配置
+### 环境变量
 
-- **语言**: `zh-hans`（简体中文）
-- **时区**: `Asia/Shanghai`
-- **DEBUG**: `True`（开发模式）
-- **数据库**: SQLite3（`db.sqlite3`）
-- **Admin 美化**: SimpleUI（`INSTALLED_APPS` 第一项）
-- **主应用**: `main`（尚未加入 `INSTALLED_APPS`，需在开发 API 时添加）
+| 变量名 | 开发默认值 | 生产环境值 | 说明 |
+|--------|-----------|-----------|------|
+| `SECRET_KEY` | 硬编码(仅开发) | 自定义随机字符串 | Django 密钥 |
+| `DEBUG` | `True` | `False` | 调试模式开关 |
+| `ALLOWED_HOSTS` | `localhost,127.0.0.1` | `*` 或具体域名 | 允许的访问域名 |
 
-## 前端路由
+### 部署文件
 
-| 路径 | 组件 | 说明 |
-|------|------|------|
-| `/` | Home.vue | 首页（Hero 区域 + 特性卡片） |
-| `/about` | About.vue | 关于我们 |
-| `/products` | Products.vue | 产品服务 |
-| `/contact` | Contact.vue | 联系我们 |
+| 文件 | 作用 |
+|------|------|
+| `Procfile` | 启动命令 `gunicorn corporate_site.wsgi:application` |
+| `render.yaml` | Render.com 服务配置 |
+| `requirements.txt` | Python 依赖清单 |
+| `.python-version` | Python 版本声明 |
 
-## 学习记录模块（study-tracker）
+### Git 仓库
 
-纯前端个人每日学习记录网站，位于 `frontend/study-tracker/`，技术栈为 HTML + Tailwind CSS + 原生 JavaScript，数据持久化到 localStorage。
-
-### 导航功能说明
-
-| 导航 | 功能描述 |
-|------|----------|
-| **首页 / 今日学习** | 当日学习记录快速录入、今日总时长、待完成学习任务、今日随笔入口，核心高频页面 |
-| **日历档案** | 日历热力图视图，按日期查看全部历史学习日志，按月切换复盘过往记录 |
-| **数据统计** | 可视化图表专区：科目时长占比、月度趋势、年度学习报告、各状态标签统计 |
-| **笔记资料库** | 汇总所有上传附件、错题笔记、知识点摘抄、自定义学习合集归档 |
-| **检索查询** | 全局多条件筛选：科目、标签、关键词、时间段，快速定位历史学习内容 |
-| **计划任务** | 周/月学习规划、待办清单、阶段性目标打卡，搭配完成进度记录 |
-| **数据备份** | 记录导入导出、批量备份、本地文件下载、历史备份文件管理 |
-| **设置** | 账号密码、深浅主题、字体/配色自定义、自定义科目&标签、网站基础配置 |
-
-### 启动方式
-
-```powershell
-cd frontend/study-tracker
-python -m http.server 8080
-# 访问 http://localhost:8080/
-```
-
-## 后续开发计划
-
-1. **安装 Django REST Framework** - 构建前后端分离的 REST API
-2. **设计数据模型** - 在 `main/models.py` 中定义业务模型
-3. **编写 API 接口** - 使用 DRF 的 `ModelSerializer` 和 `ViewSet`
-4. **配置 CORS** - 安装 `django-cors-headers` 处理跨域
-5. **前后端联调** - 前端通过 Axios 调用后端 API 获取数据
-6. **生产部署** - 前端 `npm run build` 打包，Django 收集静态文件部署
+- **远程地址**: `https://github.com/0311KenHuang/Study-Log.git`
+- **分支**: `main`
+- **Git 配置**: 用户名 `KenHuang`，邮箱 `3296651736@qq.com`

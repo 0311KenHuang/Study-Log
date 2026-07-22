@@ -8,21 +8,24 @@
 
 | 层级 | 技术 | 说明 |
 |------|------|------|
-| 后端 | Django 5.2 + Django REST Framework | RESTful API 服务 |
+| 后端 | Django 5.2 + Django REST Framework 3.17 | RESTful API 服务 |
 | 数据库 | SQLite | 开发环境轻量存储 |
 | 后台管理 | django-simpleui | 美化 Django Admin |
 | 跨域处理 | django-cors-headers | 允许前端跨域访问 |
+| 静态文件 | WhiteNoise | 生产环境静态文件服务 |
+| 应用服务器 | Gunicorn | 生产环境 WSGI 服务器 |
 | 门户前端 | Vue 3 + Vite + TypeScript | 企业官网风格展示页 |
 | 应用前端 | 原生 HTML + Tailwind CSS | 学习记录核心功能界面 |
 | 路由 | Vue Router / 原生 JS 路由 | 前端页面切换 |
+| 部署平台 | Render.com | 免费自动部署 |
 
 ## 项目结构
 
 ```
 企业官网开发实战/
 ├── corporate_site/          # Django 项目配置
-│   ├── settings.py          # 项目设置(含 DRF / CORS 配置)
-│   ├── urls.py               # 根路由(admin + api)
+│   ├── settings.py          # 项目设置(含 DRF / CORS / WhiteNoise / 环境变量配置)
+│   ├── urls.py              # 根路由(admin + api + study-tracker 首页)
 │   ├── wsgi.py / asgi.py    # 部署入口
 │
 ├── main/                     # 核心业务 App
@@ -32,26 +35,30 @@
 │   ├── urls.py              # API 路由注册
 │   └── migrations/          # 数据库迁移文件
 │
-├── frontend/                 # Vue 3 门户前端
-│   ├── src/
+├── frontend/                 # 前端项目
+│   ├── src/                  # Vue 3 门户前端
 │   │   ├── views/           # 首页 / 关于 / 产品 / 联系
 │   │   ├── router/          # 路由配置
 │   │   └── App.vue
+│   ├── study-tracker/        # 学习追踪应用(原生 JS + Tailwind)
+│   │   ├── index.html       # 主页面(含 8 个功能模块)
+│   │   ├── css/styles.css
+│   │   └── js/
+│   │       ├── app.js       # 应用入口
+│   │       ├── router.js    # 前端路由
+│   │       ├── pages.js     # 页面渲染逻辑
+│   │       └── data.js      # 数据交互层(API 调用)
 │   ├── vite.config.ts       # Vite 配置(含 /api 代理)
 │   └── package.json
 │
-│   └── study-tracker/        # 学习追踪应用(原生 JS + Tailwind)
-│       ├── index.html       # 主页面(含 8 个功能模块)
-│       ├── css/styles.css
-│       └── js/
-│           ├── app.js       # 应用入口
-│           ├── router.js    # 前端路由
-│           ├── pages.js     # 页面渲染逻辑
-│           └── data.js      # 数据交互层
-│
 ├── assets/                   # 品牌素材(Logo)
-├── manage.py                # Django 管理入口
-└── requirements.txt          # Python 依赖清单
+├── manage.py                 # Django 管理入口
+├── requirements.txt          # Python 依赖清单
+├── Procfile                  # 部署启动命令(Gunicorn)
+├── render.yaml               # Render.com 部署配置
+├── .python-version           # Python 版本声明
+├── .gitignore                # Git 忽略规则
+└── README.md                 # 本文件
 ```
 
 ## 核心功能
@@ -90,10 +97,12 @@
 ### 环境要求
 
 - Python 3.10+
-- Node.js 18+
+- Node.js 18+(仅 Vue 门户开发时需要)
 - Git
 
-### 后端启动
+### 本地开发(推荐)
+
+study-tracker 已集成到 Django 中，只需启动一个服务即可同时访问前端页面和 API：
 
 ```bash
 # 1. 创建并激活虚拟环境
@@ -118,32 +127,92 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-后端运行在 `http://127.0.0.1:8000`，后台管理位于 `/admin/`。
+启动后访问以下地址：
 
-### 前端启动(Vue 门户)
+| 地址 | 说明 |
+|------|------|
+| `http://127.0.0.1:8000/` | 用功日志首页(study-tracker 前端) |
+| `http://127.0.0.1:8000/api/` | REST API 接口 |
+| `http://127.0.0.1:8000/admin/` | Django 后台管理(SimpleUI) |
+
+### Vue 门户前端(独立开发时)
+
+如需单独开发 Vue 门户页面：
 
 ```bash
 cd frontend
-
-# 安装依赖
 npm install
-
-# 启动开发服务器
 npm run dev
 ```
 
 Vue 门户运行在 `http://localhost:5173`，已配置 `/api` 代理到后端 8000 端口。
 
-### 学习追踪应用(原生前端)
+## 生产部署(Render.com)
 
-直接用浏览器打开 `frontend/study-tracker/index.html` 即可使用，或通过任意静态服务器托管。
+本项目已配置好 Render.com 一键部署，支持自动构建和持续部署。
+
+### 部署步骤
+
+1. 将代码推送到 GitHub 仓库
+2. 在 [render.com](https://render.com) 注册并连接 GitHub 账号
+3. 创建 Web Service，选择本仓库
+4. 配置项会从 `render.yaml` 自动读取：
+   - **Build**: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate`
+   - **Start**: `gunicorn corporate_site.wsgi:application`
+5. 添加环境变量：
+
+| 变量名 | 值 | 说明 |
+|--------|-----|------|
+| `SECRET_KEY` | 自定义随机字符串 | Django 密钥 |
+| `DEBUG` | `False` | 关闭调试模式 |
+| `ALLOWED_HOSTS` | `*` | 允许的访问域名 |
+
+6. 部署完成后获得公网地址，如 `https://study-log-xxxx.onrender.com`
+
+### 部署架构
+
+```
+用户浏览器
+    ↓ HTTPS
+Render.com CDN
+    ↓
+Gunicorn (WSGI 服务器)
+    ↓
+Django 应用
+    ├── /api/*        → DRF ViewSet (JSON API)
+    ├── /static/*     → WhiteNoise (静态文件)
+    ├── /admin/       → Django Admin (后台管理)
+    └── /            → study-tracker (前端页面)
+    ↓
+SQLite 数据库
+```
+
+### 部署相关文件说明
+
+| 文件 | 作用 |
+|------|------|
+| `Procfile` | 定义启动命令 `gunicorn corporate_site.wsgi:application` |
+| `render.yaml` | Render.com 服务配置(构建命令、环境变量) |
+| `requirements.txt` | Python 依赖清单(含 gunicorn、whitenoise) |
+| `.python-version` | 声明 Python 版本 |
+| `corporate_site/settings.py` | 支持环境变量配置 SECRET_KEY / DEBUG / ALLOWED_HOSTS |
+
+### 免费层限制
+
+- 服务在 15 分钟无访问后自动休眠，下次访问需等待 30-60 秒唤醒
+- SQLite 数据库在重新部署时会重置(如需持久数据，建议升级 PostgreSQL)
+- 每月 750 小时免费实例时间
 
 ## 开发说明
 
 - 后端时区已设为 `Asia/Shanghai`，语言为简体中文
 - CORS 已全局放行，方便前后端分离开发
-- `DEBUG = True` 仅供开发使用，生产环境请关闭并配置 `ALLOWED_HOSTS`
-- 生产环境请将 `SECRET_KEY` 改为环境变量读取，切勿硬编码
+- `DEBUG` 默认为 `True`(开发模式)，通过环境变量 `DEBUG=False` 切换生产模式
+- `SECRET_KEY` 支持环境变量覆盖，生产环境务必设置
+- `ALLOWED_HOSTS` 支持环境变量配置，默认 `localhost,127.0.0.1`
+- study-tracker 的 API 地址使用相对路径 `/api`，自动适配任何域名
+- 静态文件由 Django 统一管理，通过 `STATICFILES_DIRS` 注册 study-tracker 目录
+- 生产环境使用 WhiteNoise 提供静态文件服务，无需 Nginx
 
 ## 许可证
 
