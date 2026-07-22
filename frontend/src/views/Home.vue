@@ -8,26 +8,26 @@
         搭配数据统计看清学习规律，稳步调整学习节奏。
       </p>
       <div class="hero-actions">
-        <router-link to="/products" class="cta-btn primary">开始记录</router-link>
+        <a href="/#today" class="cta-btn primary">开始记录</a>
         <router-link to="/about" class="cta-btn ghost">了解更多</router-link>
       </div>
     </section>
     <section class="features">
-      <div class="feature-card">
+      <a href="/#today" class="feature-card">
         <div class="feature-icon">📝</div>
         <h3>随手记录</h3>
         <p>轻量日记本，快速记录每日学习状态、难点与完成任务</p>
-      </div>
-      <div class="feature-card">
+      </a>
+      <a href="/#stats" class="feature-card">
         <div class="feature-icon">📊</div>
         <h3>数据统计</h3>
         <p>可视化学习规律，看清自己的学习节奏与成长轨迹</p>
-      </div>
-      <div class="feature-card">
+      </a>
+      <a href="/#tasks" class="feature-card">
         <div class="feature-icon">🎯</div>
         <h3>稳步调整</h3>
         <p>依据数据反馈，科学调整学习计划，持续进步</p>
-      </div>
+      </a>
     </section>
   </div>
 </template>
@@ -77,6 +77,7 @@
   font-size: 1rem;
   transition: all 0.3s;
   letter-spacing: 0.05em;
+  cursor: pointer;
 }
 .cta-btn.primary {
   background: #c38d6b;
@@ -111,6 +112,8 @@
   text-align: center;
   border: 1px solid #f0e4d3;
   transition: all 0.3s;
+  text-decoration: none;
+  cursor: pointer;
 }
 .feature-card:hover {
   transform: translateY(-4px);
