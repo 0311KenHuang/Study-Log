@@ -16,6 +16,9 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# collectstatic 产物
+staticfiles/
+
 # 媒体文件(用户上传内容)
 .uploads/
 media/

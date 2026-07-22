@@ -58,7 +58,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body class="bg-cream-50 text-coffee-700 font-sans antialiased">
 
@@ -68,7 +68,7 @@
       <div class="flex items-center justify-between h-16">
         <!-- 品牌 Logo -->
         <div class="flex items-center gap-2.5 shrink-0">
-          <img src="logo_icon.jpg" alt="用功日志" class="w-9 h-9 rounded-lg object-cover" />
+          <img src="/static/logo_icon.jpg" alt="用功日志" class="w-9 h-9 rounded-lg object-cover" />
           <div class="flex flex-col leading-tight">
             <span class="text-base font-semibold tracking-wide text-coffee-700">用功日志</span>
             <span class="text-[10px] text-clay-500 tracking-wider">记下每一段用功的时光</span>
@@ -99,17 +99,17 @@
   <!-- 页脚 - 引用 Vue 项目风格 -->
   <footer class="text-center py-10 px-8 bg-cream-50 border-t border-cream-400 text-coffee-400">
     <div class="flex items-center justify-center gap-2.5 mb-3 text-coffee-700 text-base font-medium">
-      <img src="logo_icon.jpg" alt="用功日志" class="w-8 h-8 rounded-md object-cover" />
+      <img src="/static/logo_icon.jpg" alt="用功日志" class="w-8 h-8 rounded-md object-cover" />
       <span>用功日志 · 记下每一段用功的时光</span>
     </div>
     <p class="text-sm text-coffee-300">© <span id="footer-year"></span> 用功日志 - 保留所有权利</p>
   </footer>
 
   <!-- 模块脚本（带版本号防缓存） -->
-  <script src="js/data.js?v=20260722a"></script>
-  <script src="js/pages.js?v=20260722a"></script>
-  <script src="js/router.js?v=20260722a"></script>
-  <script src="js/app.js?v=20260722a"></script>
+  <script src="/static/js/data.js?v=20260722a"></script>
+  <script src="/static/js/pages.js?v=20260722a"></script>
+  <script src="/static/js/router.js?v=20260722a"></script>
+  <script src="/static/js/app.js?v=20260722a"></script>
   <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
 </body>
 </html>

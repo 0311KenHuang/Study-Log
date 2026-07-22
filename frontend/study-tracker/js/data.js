@@ -1,11 +1,11 @@
 /**
  * data.js - 数据管理层
  * 已改为调用后端 Django REST API，数据持久化到 SQLite
- * API 基础地址：http://127.0.0.1:8000/api/
+ * API 基础地址：自动适配(开发环境走 Vite 代理，生产环境走同域 /api)
  */
 
-// API 基础地址
-const API_BASE = 'http://127.0.0.1:8000/api';
+// API 基础地址 - 自动适配当前域名
+const API_BASE = '/api';
 
 // 默认分类
 const DEFAULT_CATEGORIES = ['编程', '英语', '阅读', '写作', '数学', '设计', '其他'];
