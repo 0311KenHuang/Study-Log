@@ -29,13 +29,16 @@ media/
 
 # ===== Node.js / 前端 =====
 node_modules/
-dist/
 dist-ssr/
 *.local
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# 注意：frontend/dist/ 需要提交到 Git（Vue 构建产物，部署时需要）
+# 如果需要忽略其他 dist 目录，单独添加：
+# /some-other-project/dist/
 
 # ===== 构建产物 =====
 *.egg-info/

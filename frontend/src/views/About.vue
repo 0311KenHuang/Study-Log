@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page-header">
-      <img src="/logo_icon.jpg" alt="用功日志" class="page-logo" />
+      <img :src="'/static/logo_icon.jpg'" alt="用功日志" class="page-logo" />
       <h1>关于用功日志</h1>
       <p class="subtitle">记下每一段用功的时光</p>
     </div>

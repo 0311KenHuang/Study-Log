@@ -139,9 +139,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# 额外的静态文件目录（study-tracker 的 CSS/JS/图片）
+# 额外的静态文件目录（study-tracker 的 CSS/JS/图片 + Vue 门户构建产物）
 STATICFILES_DIRS = [
     BASE_DIR / 'frontend' / 'study-tracker',
+    BASE_DIR / 'frontend' / 'dist',
 ]
 
 # 生产环境启用 WhiteNoise 压缩

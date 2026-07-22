@@ -2,7 +2,7 @@
   <div id="app">
     <nav class="navbar">
       <div class="brand">
-        <img src="/logo_icon.jpg" alt="用功日志" class="brand-logo" />
+        <img :src="'/static/logo_icon.jpg'" alt="用功日志" class="brand-logo" />
         <span class="brand-name">用功日志</span>
       </div>
       <ul class="nav-links">
@@ -17,7 +17,7 @@
     </main>
     <footer class="footer">
       <div class="footer-brand">
-        <img src="/logo_icon.jpg" alt="用功日志" class="footer-logo" />
+        <img :src="'/static/logo_icon.jpg'" alt="用功日志" class="footer-logo" />
         <span>用功日志 · 记下每一段用功的时光</span>
       </div>
       <p class="footer-copy">© {{ year }} 用功日志 - 保留所有权利</p>

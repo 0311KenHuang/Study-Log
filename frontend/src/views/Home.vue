@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <section class="hero">
-      <img src="/logo_full.jpg" alt="用功日志" class="hero-logo" />
+      <img :src="'/static/logo_full.jpg'" alt="用功日志" class="hero-logo" />
       <p class="tagline">记下每一段用功的时光</p>
       <p class="intro">
         简单好用的线上学习日记本，随手记录当日学习状态、难点、完成任务，<br />
