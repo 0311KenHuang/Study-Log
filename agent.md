@@ -2,7 +2,7 @@
 
 ## 项目概述
 
-本项目是一个全栈学习记录与追踪应用 **"用功日志"**，采用 **Django + DRF** 作为后端框架提供 RESTful API，**Vue 3** 作为门户展示前端，**原生 HTML + Tailwind CSS** 作为学习记录核心应用界面。支持本地开发与 Render.com 一键部署。
+本项目是一个全栈学习记录与追踪应用 **"用功日志"**，采用 **Django + DRF** 作为后端框架提供 RESTful API，**Vue 3** 作为品牌门户展示前端（构建后由 Django 统一服务），**原生 HTML + Tailwind CSS** 作为学习记录核心应用界面。Vue 门户与 study-tracker 已整合到 Django 单服务中，通过路由对接形成完整的应用入口。支持本地开发与 Render.com 一键部署。
 
 ## 技术栈
 
@@ -25,8 +25,8 @@
 |------|------|------|
 | Vue | 3.5.40 | 门户展示页框架 |
 | TypeScript | 6.0.2 | 类型系统 |
-| Vite | 8.1.1 | 构建工具 |
-| Vue Router | 5.2.0 | 客户端路由 |
+| Vite | 8.1.1 | 构建工具（base: /static/） |
+| Vue Router | 5.2.0 | 客户端路由（history 模式，base: /portal/） |
 | Pinia | 4.0.2 | 状态管理 |
 | Axios | 1.18.1 | HTTP 请求库 |
 | Tailwind CSS | CDN | study-tracker 样式框架 |
@@ -45,8 +45,8 @@
 ├── corporate_site/                # Django 项目配置
 │   ├── __init__.py
 │   ├── asgi.py                    # ASGI 入口
-│   ├── settings.py                # 项目设置(环境变量 / DRF / CORS / WhiteNoise)
-│   ├── urls.py                    # 根路由(admin + api + study-tracker 首页)
+│   ├── settings.py                # 项目设置(环境变量 / DRF / CORS / WhiteNoise / 静态文件)
+│   ├── urls.py                    # 根路由(admin + api + study-tracker + portal)
 │   └── wsgi.py                    # WSGI 入口
 ├── main/                          # Django 主应用
 │   ├── migrations/                # 数据库迁移文件
@@ -62,30 +62,34 @@
 │   ├── public/                    # 公共静态资源
 │   │   ├── favicon.svg
 │   │   └── icons.svg
-│   ├── src/                       # Vue 3 门户前端
+│   ├── src/                       # Vue 3 门户源码
 │   │   ├── assets/                # 静态资源
 │   │   ├── router/
-│   │   │   └── index.ts           # 路由配置
+│   │   │   └── index.ts           # 路由配置(history 模式，base: /portal/)
 │   │   ├── views/                 # 页面组件
-│   │   │   ├── Home.vue           # 首页(Hero 区域 + 特性卡片)
+│   │   │   ├── Home.vue           # 首页(Hero 区域 + 功能卡片，对接 study-tracker 路由)
 │   │   │   ├── About.vue          # 关于我们
 │   │   │   ├── Products.vue       # 产品服务
 │   │   │   └── Contact.vue        # 联系我们
 │   │   ├── App.vue                # 根组件(导航栏 + 页脚)
 │   │   ├── main.ts                # 前端入口
-│   │   └── style.css              # 全局样式
+│   │   ├── style.css              # 全局样式
+│   │   └── shims-vue.d.ts        # Vue 类型声明
+│   ├── dist/                      # Vue 构建产物(已提交到 Git)
+│   │   ├── index.html             # SPA 入口
+│   │   └── portal/assets/         # 构建后的 JS/CSS
 │   ├── study-tracker/             # 学习追踪应用(原生 JS + Tailwind)
 │   │   ├── index.html             # 主页面(8 个功能模块)
 │   │   ├── css/styles.css         # 全局样式
 │   │   └── js/
 │   │       ├── app.js             # 应用入口
-│   │       ├── router.js          # 前端路由
+│   │       ├── router.js          # 前端路由(hash)
 │   │       ├── pages.js           # 页面渲染逻辑
-│   │       └── data.js            # 数据交互层(API 调用)
+│   │       └── data.js            # 数据交互层(API 调用，相对路径 /api)
 │   ├── index.html                 # Vue HTML 入口
 │   ├── package.json               # npm 依赖
 │   ├── tsconfig.json              # TypeScript 配置
-│   └── vite.config.ts             # Vite 配置(含 /api 代理)
+│   └── vite.config.ts             # Vite 配置(base: /static/，assetsDir: portal/assets)
 ├── assets/                        # 品牌素材(Logo)
 ├── manage.py                      # Django 管理脚本
 ├── requirements.txt               # Python 依赖清单
@@ -118,7 +122,7 @@ deactivate
 # Python 依赖（激活虚拟环境后）
 pip install -r requirements.txt
 
-# 前端依赖（仅 Vue 门户开发时需要）
+# 前端依赖（修改 Vue 门户源码后构建时需要）
 cd frontend
 npm install
 ```
@@ -127,7 +131,7 @@ npm install
 
 ### 本地开发（推荐方式）
 
-study-tracker 已集成到 Django 中，只需启动一个服务即可同时访问前端页面和 API：
+study-tracker 和 Vue 门户都已整合到 Django 中，只需启动一个服务即可访问全部页面和 API：
 
 ```powershell
 # 激活虚拟环境
@@ -144,20 +148,52 @@ python manage.py runserver
 
 | 地址 | 说明 |
 |------|------|
-| http://127.0.0.1:8000/ | 用功日志首页（study-tracker 前端） |
+| http://127.0.0.1:8000/ | 用功日志首页（study-tracker 主应用） |
+| http://127.0.0.1:8000/#today | 今日学习（study-tracker hash 路由） |
+| http://127.0.0.1:8000/#stats | 数据统计（study-tracker hash 路由） |
+| http://127.0.0.1:8000/#tasks | 计划任务（study-tracker hash 路由） |
+| http://127.0.0.1:8000/portal/ | Vue 门户首页（品牌展示页） |
+| http://127.0.0.1:8000/portal/about/ | 关于我们（Vue 门户子路由） |
+| http://127.0.0.1:8000/portal/products/ | 产品服务（Vue 门户子路由） |
+| http://127.0.0.1:8000/portal/contact/ | 联系我们（Vue 门户子路由） |
 | http://127.0.0.1:8000/api/ | REST API 接口列表 |
 | http://127.0.0.1:8000/admin/ | Django Admin 后台（SimpleUI 美化） |
 
-### Vue 门户前端（独立开发时）
+### 修改 Vue 门户后重新构建
 
-如需单独开发 Vue 门户页面：
+如果修改了 Vue 门户源码（`frontend/src/` 下的文件），需要重新构建：
+
+```powershell
+cd frontend
+npm run build
+cd ..
+python manage.py collectstatic --noinput
+```
+
+构建后刷新浏览器即可看到更新。study-tracker 的代码不需要构建，改完直接刷新即可。
+
+### Vue 门户独立开发模式（可选）
+
+如需使用 Vite 热更新开发 Vue 门户页面：
 
 ```powershell
 cd frontend
 npm run dev
 ```
 
-Vue 门户运行在 `http://localhost:5173`，已配置 `/api` 代理到 Django 8000 端口。
+Vite 开发服务器运行在 `http://localhost:5173`，已配置 `/api` 和 `/static` 代理到 Django 8000 端口。
+
+## 门户与主应用的路由对接
+
+Vue 门户首页的按钮和功能卡片已对接到 study-tracker 的功能页面：
+
+| 门户页面元素 | 点击后跳转到 | study-tracker 功能 |
+|-------------|-------------|-------------------|
+| "开始记录"按钮 | `/#today` | 今日学习页面 |
+| "随手记录"卡片 | `/#today` | 今日学习页面 |
+| "数据统计"卡片 | `/#stats` | 数据统计页面 |
+| "稳步调整"卡片 | `/#tasks` | 计划任务页面 |
+| "了解更多"按钮 | `/portal/about/` | 保持在 Vue 门户内 |
 
 ## 数据模型
 
@@ -207,20 +243,20 @@ Vue 门户运行在 `http://localhost:5173`，已配置 `/api` 代理到 Django 
 - **REST Framework**: 已配置 `AllowAny` 权限，无分页
 - **CORS**: 全局允许跨域
 - **静态文件**: WhiteNoise 中间件，生产环境自动压缩
-- **静态文件目录**: `STATICFILES_DIRS` 注册了 `frontend/study-tracker`
+- **静态文件目录**: `STATICFILES_DIRS` 注册了 `frontend/study-tracker` 和 `frontend/dist`
 
 ## 前端路由
 
-### Vue 门户
+### Vue 门户（history 模式，base: /portal/）
 
 | 路径 | 组件 | 说明 |
 |------|------|------|
-| `/` | Home.vue | 首页（Hero 区域 + 特性卡片） |
-| `/about` | About.vue | 关于我们 |
-| `/products` | Products.vue | 产品服务 |
-| `/contact` | Contact.vue | 联系我们 |
+| `/portal/` | Home.vue | 首页（Hero 区域 + 功能卡片，对接 study-tracker） |
+| `/portal/about/` | About.vue | 关于我们 |
+| `/portal/products/` | Products.vue | 产品服务 |
+| `/portal/contact/` | Contact.vue | 联系我们 |
 
-### study-tracker（hash 路由）
+### study-tracker（hash 路由，根路径 /）
 
 | 路由 | 功能 |
 |------|------|
@@ -233,6 +269,49 @@ Vue 门户运行在 `http://localhost:5173`，已配置 `/api` 代理到 Django 
 | `#tasks` | 计划任务 |
 | `#backup` | 数据备份 |
 | `#settings` | 设置 |
+
+## 前端构建配置
+
+### Vite 配置（vite.config.ts）
+
+```typescript
+export default defineConfig({
+  plugins: [vue()],
+  base: '/static/',                    // 静态资源路径前缀
+  build: {
+    assetsDir: 'portal/assets',         // 构建产物子目录
+  },
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': { target: 'http://127.0.0.1:8000', changeOrigin: true },
+      '/static': { target: 'http://127.0.0.1:8000', changeOrigin: true },
+    },
+  },
+})
+```
+
+### Vue Router 配置（router/index.ts）
+
+```typescript
+const router = createRouter({
+  history: createWebHistory('/portal/'),    // history 模式，base 路径
+  routes: [
+    { path: '/', name: 'Home', component: Home },
+    { path: '/about', name: 'About', component: () => import('../views/About.vue') },
+    { path: '/products', name: 'Products', component: () => import('../views/Products.vue') },
+    { path: '/contact', name: 'Contact', component: () => import('../views/Contact.vue') },
+  ],
+})
+```
+
+### Vue 组件图片路径
+
+Vue 组件中的图片路径使用动态绑定，避免 Vite 解析：
+
+```vue
+<img :src="'/static/logo_icon.jpg'" alt="用功日志" />
+```
 
 ## study-tracker 模块
 
@@ -257,19 +336,8 @@ study-tracker 已集成到 Django 中，通过根路径 `/` 直接访问。其 C
 
 ### 开发环境
 
-study-tracker 的 API 地址为相对路径 `/api`，由 Django 统一服务，无需跨域配置。
-
-Vue 门户通过 Vite 代理转发 `/api` 请求到 Django 后端：
-
-```typescript
-// vite.config.ts
-proxy: {
-  '/api': {
-    target: 'http://127.0.0.1:8000',
-    changeOrigin: true,
-  },
-}
-```
+- **study-tracker**: API 地址为相对路径 `/api`，由 Django 统一服务，无需跨域配置
+- **Vue 门户（独立开发模式）**: 通过 Vite 代理转发 `/api` 和 `/static` 请求到 Django 后端
 
 ### 生产环境
 
@@ -287,10 +355,12 @@ Render.com CDN
 Gunicorn (WSGI 服务器)
     ↓
 Django 应用
-    ├── /api/*        → DRF ViewSet (JSON API)
-    ├── /static/*     → WhiteNoise (静态文件)
-    ├── /admin/       → Django Admin (后台管理)
-    └── /            → study-tracker (前端页面)
+    ├── /api/*          → DRF ViewSet (JSON API)
+    ├── /static/*       → WhiteNoise (静态文件: study-tracker + Vue 构建产物)
+    ├── /portal/        → Vue 门户首页 (SPA)
+    ├── /portal/*       → Vue 门户子路由 (about/products/contact)
+    ├── /admin/         → Django Admin (后台管理)
+    └── /              → study-tracker (主应用前端页面)
     ↓
 SQLite 数据库
 ```
@@ -308,9 +378,10 @@ SQLite 数据库
 | 文件 | 作用 |
 |------|------|
 | `Procfile` | 启动命令 `gunicorn corporate_site.wsgi:application` |
-| `render.yaml` | Render.com 服务配置 |
+| `render.yaml` | Render.com 服务配置（构建命令含 npm install && npm run build） |
 | `requirements.txt` | Python 依赖清单 |
 | `.python-version` | Python 版本声明 |
+| `frontend/dist/` | Vue 构建产物（已提交到 Git，部署时使用） |
 
 ### Git 仓库
 
