@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用功日志 - 记下每一段用功的时光</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 自定义配置：温暖米色调，引用 Vue 项目配色概念 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // 温暖米色背景系
+            cream: {
+              50: '#fffaf3',
+              100: '#fdf5ea',
+              200: '#fdeede',
+              300: '#f5e6d3',
+              400: '#f0e4d3',
+            },
+            // 深咖文字系
+            coffee: {
+              100: '#e8dccf',
+              300: '#a89888',
+              400: '#8a7a6e',
+              500: '#6b5b4f',
+              600: '#524439',
+              700: '#3d3229',
+              800: '#2a2218',
+            },
+            // 暖橙主色系（品牌色）
+            clay: {
+              100: '#faeee3',
+              300: '#e8a87c',
+              400: '#d97f55',
+              500: '#c38d6b',
+              600: '#b07a58',
+              700: '#8f5f42',
+            },
+            // 辅助雾蓝（保留少量用于数据可视化区分）
+            mist: {
+              300: '#b0bec8',
+              400: '#8fa3b8',
+              500: '#7a90a5',
+            },
+          },
+          fontFamily: {
+            sans: ['system-ui', '-apple-system', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 1px 8px rgba(195, 141, 107, 0.06)',
+            'soft-md': '0 4px 16px rgba(195, 141, 107, 0.1)',
+            'soft-lg': '0 8px 30px rgba(195, 141, 107, 0.18)',
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-cream-50 text-coffee-700 font-sans antialiased">
+
+  <!-- 顶部导航栏 - 引用 Vue 项目风格 -->
+  <nav id="navbar" class="sticky top-0 z-50 bg-cream-50 border-b border-cream-400 shadow-soft">
+    <div class="max-w-[1440px] mx-auto px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- 品牌 Logo -->
+        <div class="flex items-center gap-2.5 shrink-0">
+          <img src="logo_icon.jpg" alt="用功日志" class="w-9 h-9 rounded-lg object-cover" />
+          <div class="flex flex-col leading-tight">
+            <span class="text-base font-semibold tracking-wide text-coffee-700">用功日志</span>
+            <span class="text-[10px] text-clay-500 tracking-wider">记下每一段用功的时光</span>
+          </div>
+        </div>
+
+        <!-- 导航链接 -->
+        <div class="flex items-center gap-1 overflow-x-auto no-scrollbar" id="nav-links">
+          <a href="#home" data-route="home" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">首页</a>
+          <a href="#today" data-route="today" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">今日学习</a>
+          <a href="#calendar" data-route="calendar" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">日历档案</a>
+          <a href="#stats" data-route="stats" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">数据统计</a>
+          <a href="#notes" data-route="notes" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">笔记资料库</a>
+          <a href="#search" data-route="search" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">检索查询</a>
+          <a href="#tasks" data-route="tasks" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">计划任务</a>
+          <a href="#backup" data-route="backup" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">数据备份</a>
+          <a href="#settings" data-route="settings" class="nav-item px-3 py-1.5 text-[13px] text-coffee-500 rounded-md transition-colors">设置</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主内容区 -->
+  <main id="app-content" class="min-h-screen">
+    <!-- 页面内容由 JS 动态渲染 -->
+  </main>
+
+  <!-- 页脚 - 引用 Vue 项目风格 -->
+  <footer class="text-center py-10 px-8 bg-cream-50 border-t border-cream-400 text-coffee-400">
+    <div class="flex items-center justify-center gap-2.5 mb-3 text-coffee-700 text-base font-medium">
+      <img src="logo_icon.jpg" alt="用功日志" class="w-8 h-8 rounded-md object-cover" />
+      <span>用功日志 · 记下每一段用功的时光</span>
+    </div>
+    <p class="text-sm text-coffee-300">© <span id="footer-year"></span> 用功日志 - 保留所有权利</p>
+  </footer>
+
+  <!-- 模块脚本（带版本号防缓存） -->
+  <script src="js/data.js?v=20260722a"></script>
+  <script src="js/pages.js?v=20260722a"></script>
+  <script src="js/router.js?v=20260722a"></script>
+  <script src="js/app.js?v=20260722a"></script>
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

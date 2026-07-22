@@ -1,0 +1,377 @@
+/**
+ * 用功日志 - 全局样式
+ * 视觉风格：温暖米色调，引用 Vue 项目（frontend/）的品牌概念
+ * 配色：温暖米色背景、深咖文字、暖橙品牌色、少量雾蓝辅助
+ */
+
+/* 滚动条隐藏 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 导航激活状态 - 暖橙下划线风格，引用 Vue 项目 */
+.nav-item.active {
+  color: #c38d6b !important;
+  background-color: transparent;
+  font-weight: 500;
+  position: relative;
+}
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: #c38d6b;
+  border-radius: 2px;
+}
+.nav-item:hover {
+  color: #c38d6b;
+  background-color: #fdf5ea;
+}
+
+/* 页面容器 */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px 64px;
+}
+
+/* 卡片基础样式 - 温暖哑光质感 */
+.card {
+  background: #fffaf3;
+  border: 1px solid #f0e4d3;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(195, 141, 107, 0.06);
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.card:hover {
+  box-shadow: 0 4px 16px rgba(195, 141, 107, 0.1);
+}
+
+/* 表单输入框 */
+.input-field {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: #3d3229;
+  background: #fffaf3;
+  border: 1px solid #f0e4d3;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.input-field:focus {
+  border-color: #c38d6b;
+  box-shadow: 0 0 0 3px rgba(195, 141, 107, 0.12);
+}
+.input-field::placeholder {
+  color: #c4b5a0;
+}
+
+/* 按钮 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 0.05em;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #c38d6b;
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #b07a58;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(195, 141, 107, 0.3);
+}
+
+.btn-secondary {
+  background: #fdeede;
+  color: #6b5b4f;
+}
+.btn-secondary:hover {
+  background: #f5e6d3;
+}
+
+.btn-cafe {
+  background: #a89888;
+  color: #fff;
+}
+.btn-cafe:hover {
+  background: #8a7a6e;
+}
+
+.btn-mist {
+  background: #8fa3b8;
+  color: #fff;
+}
+.btn-mist:hover {
+  background: #7a90a5;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #c38d6b;
+  border: 1px solid #c38d6b;
+}
+.btn-outline:hover {
+  background: #c38d6b;
+  color: #fff;
+}
+
+.btn-danger {
+  background: #f5e6e0;
+  color: #b07a58;
+}
+.btn-danger:hover {
+  background: #ecd5c8;
+}
+
+/* 标签/徽章 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.tag-cafe {
+  background: #fdeede;
+  color: #8f5f42;
+}
+.tag-mist {
+  background: #e8eef3;
+  color: #5a7085;
+}
+.tag-warm {
+  background: #fdf5ea;
+  color: #a89888;
+}
+.tag-clay {
+  background: #faeee3;
+  color: #b07a58;
+}
+
+/* 列表项 */
+.list-item {
+  padding: 14px 18px;
+  border-bottom: 1px solid #f5e6d3;
+  transition: background 0.2s;
+}
+.list-item:last-child {
+  border-bottom: none;
+}
+.list-item:hover {
+  background: #fdf5ea;
+}
+
+/* 表格 */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.data-table thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: #a89888;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: #fdf5ea;
+  border-bottom: 1px solid #f0e4d3;
+}
+.data-table tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f5e6d3;
+  color: #524439;
+}
+.data-table tbody tr:hover td {
+  background: #fdf5ea;
+}
+
+/* 日历 */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #f0e4d3;
+  border: 1px solid #f0e4d3;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.calendar-cell {
+  background: #fffaf3;
+  min-height: 80px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.calendar-cell:hover {
+  background: #fdf5ea;
+}
+.calendar-cell.other-month {
+  background: #fdf5ea;
+  color: #c4b5a0;
+}
+.calendar-cell.today {
+  background: #fdeede;
+}
+.calendar-cell .day-number {
+  font-size: 12px;
+  font-weight: 500;
+  color: #524439;
+  margin-bottom: 4px;
+}
+.calendar-cell.other-month .day-number {
+  color: #d4c9b8;
+}
+.calendar-cell .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+/* 进度条 */
+.progress-bar {
+  height: 4px;
+  background: #f5e6d3;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* 分隔线 */
+.divider {
+  height: 1px;
+  background: #f0e4d3;
+  margin: 20px 0;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #c4b5a0;
+}
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  stroke: #e8dccf;
+}
+
+/* 统计数字 */
+.stat-number {
+  font-size: 28px;
+  font-weight: 300;
+  color: #3d3229;
+  letter-spacing: -0.5px;
+}
+.stat-label {
+  font-size: 12px;
+  color: #a89888;
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+}
+
+/* 滚动区域 */
+.scroll-area {
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+.scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+.scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+  background: #e8dccf;
+  border-radius: 2px;
+}
+
+/* 页面淡入 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* 优先级标识 */
+.priority-high { color: #d97f55; }
+.priority-medium { color: #c38d6b; }
+.priority-low { color: #a89888; }
+
+/* 复选框自定义 */
+.custom-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #d4c9b8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-checkbox.checked {
+  background: #c38d6b;
+  border-color: #c38d6b;
+}
+.custom-checkbox.checked::after {
+  content: '';
+  width: 5px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+  margin-bottom: 1px;
+}
+
+/* Hero 区域 - 引用 Vue 项目首页风格 */
+.hero-section {
+  text-align: center;
+  padding: 5rem 2rem 4rem;
+  background: linear-gradient(180deg, #fffaf3 0%, #fdeede 100%);
+  border-radius: 0 0 16px 16px;
+}
+.hero-logo {
+  width: 280px;
+  max-width: 80%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(195, 141, 107, 0.18);
+  margin-bottom: 1.8rem;
+}
